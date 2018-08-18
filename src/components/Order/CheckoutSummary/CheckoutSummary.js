@@ -10,6 +10,7 @@ const checkoutSummary = (props) => {
             <div style={{ width: '100%', margin: 'auto' }}>
                 <Burger ingredients={props.ingredients} />
             </div>
+            <h4 style={{textAlign: 'center'}}>TOTAL PRICE: U$ {Number.parseFloat(props.totalPrice).toFixed(2)}</h4>
             <Button buttonType="Danger" clicked={props.checkoutCancelled}>CANCEL</Button>
             <Button buttonType="Success" clicked={props.checkoutContinue}>CONTINUE</Button>
         </div>
