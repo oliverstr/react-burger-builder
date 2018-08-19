@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import axios from '../../axios-orders';
 import WithErrorHandler from '../../hoc/WithErrorHandler/WithErrorHandler';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import ContactData from './ContactData/ContactData';
 import { connect } from 'react-redux';
 
@@ -42,7 +42,7 @@ class Checkout extends PureComponent {
 
 
     render() { 
-        return (
+        let summary = (
             <div>
                 <CheckoutSummary 
                     ingredients={this.props.ingredients}
@@ -53,6 +53,12 @@ class Checkout extends PureComponent {
                 <Route path={this.props.match.path + '/contact-data'} component={ContactData}/>
             </div>
         );
+
+        if (!this.props.ingredients) {
+            summary = <Redirect to="/burger" />
+        }
+
+        return summary;
     }
 }
 

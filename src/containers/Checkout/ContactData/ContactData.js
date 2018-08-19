@@ -5,6 +5,7 @@ import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner'
 import WithError from '../../../hoc/WithErrorHandler/WithErrorHandler';
 import { connect } from 'react-redux';
+import * as actions from '../../../store/actions/order';
 
 class ContactData extends Component {
 
@@ -14,14 +15,13 @@ class ContactData extends Component {
         address: {
             street: '',
             postalCode: ''
-        },
-        loading: false
+        }
     }
 
     orderHandler = (event) => {
         event.preventDefault();
 
-        this.setState({loading: true});
+        // this.setState({loading: true});
 
         const order = {
             ingredients: this.props.ingredients,
@@ -37,12 +37,7 @@ class ContactData extends Component {
             },
             deliveryMethod: 'fastest'
         }
-        axios.post('/orders.json', order)
-            .then(data => {
-                this.setState({loading: false})
-                this.props.history.push('/burger');
-            })
-            .catch(err => this.setState({loading: false}));
+        this.props.onOrderPlaced(order);
     }
 
     render() {
@@ -55,7 +50,7 @@ class ContactData extends Component {
                 <Button buttonType="Success" clicked={this.orderHandler}>ORDER</Button>
             </form>
         );
-        if (this.state.loading) {
+        if (this.props.loading) {
             form = <Spinner />
         }
         return (
@@ -71,7 +66,14 @@ const mapStateToProps = state => {
     return {
         ingredients: state.br.ingredients,
         totalPrice: state.br.totalPrice,
+        loading: state.or.loading
+    };
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onOrderPlaced: (order) => dispatch(actions.placeOrder({order}))
     };
 }
  
-export default connect(mapStateToProps)(WithError(ContactData, axios));
+export default connect(mapStateToProps, mapDispatchToProps)(WithError(ContactData, axios));
